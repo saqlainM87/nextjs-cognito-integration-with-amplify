@@ -1,0 +1,14 @@
+.loginForm {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+
+.inputGroup {
+    margin: 1rem 0;
+}
+
+.inputGroup label {
+    padding: 0 1rem;
+}

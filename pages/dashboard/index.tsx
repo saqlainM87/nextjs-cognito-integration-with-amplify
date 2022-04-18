@@ -58,7 +58,7 @@ const Dashboard: NextPage<DashboardProp> = ({ userInfo }) => {
 
     const signOut = async () => {
         try {
-            await Auth.signOut(); // Logs out from client side
+            // await Auth.signOut(); // Logs out from client side
             await axios.get('/api/signOut'); //Logs out from server side
 
             router.replace('/login');

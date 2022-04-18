@@ -11,7 +11,11 @@ export default async function handler(
     req: NextApiRequest,
     res: NextApiResponse
 ) {
-    const { username, password } = req.body;
+    if (req.method === 'POST') {
+        const { username, password } = req.body;
 
-    res.json(await signIn(username, password));
+        res.json(await signIn(username, password));
+    }
+
+    res.end();
 }

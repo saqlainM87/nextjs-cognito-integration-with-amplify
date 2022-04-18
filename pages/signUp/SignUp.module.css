@@ -1,4 +1,4 @@
-.loginForm {
+.signUpForm {
     display: flex;
     justify-content: center;
     align-items: center;
@@ -17,4 +17,8 @@
     margin-bottom: 1rem;
     text-decoration: underline;
     cursor: pointer;
+}
+
+.codeSubmitButton {
+    margin: 0 0.5rem;
 }

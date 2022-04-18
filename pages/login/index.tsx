@@ -3,6 +3,7 @@ import { useState } from 'react';
 import { useRouter } from 'next/router';
 import { Auth } from 'aws-amplify';
 import axios from 'axios';
+import Link from 'next/link';
 
 import styles from './Login.module.css';
 
@@ -29,21 +30,18 @@ const Login: NextPage = () => {
     const [password, setPassword] = useState('');
     const router = useRouter();
 
-    const clientSignIn = async (username: string, password: string) => {
-        const user = await Auth.signIn(username, password);
-
-        return user;
-    };
-
     const signIn = async () => {
         try {
-            const user = await clientSignIn(username, password); // Logs in at client side
+            // const user = await Auth.signIn(username, password); // Logs in at client side
             const response = await axios.post('/api/signIn', {
                 username,
                 password,
             }); // Logs in at server side
 
-            if (response && user) {
+            if (
+                response
+                // && user
+            ) {
                 router.push('/dashboard');
             }
         } catch (error) {
@@ -82,6 +80,10 @@ const Login: NextPage = () => {
                 </div>
 
                 <div className={styles.inputGroup}>
+                    <div className={styles.signUpLink}>
+                        <Link href="/signUp">Sign Up</Link>
+                    </div>
+
                     <button type="submit">Login</button>
                 </div>
             </form>

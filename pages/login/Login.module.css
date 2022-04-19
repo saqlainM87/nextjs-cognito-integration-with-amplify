@@ -17,4 +17,6 @@
     margin-bottom: 1rem;
     text-decoration: underline;
     cursor: pointer;
+    display: flex;
+    justify-content: center;
 }

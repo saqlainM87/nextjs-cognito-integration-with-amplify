@@ -13,10 +13,12 @@
     padding: 0 1rem;
 }
 
-.signUpLink {
+.link {
     margin-bottom: 1rem;
     text-decoration: underline;
     cursor: pointer;
+    display: flex;
+    justify-content: center;
 }
 
 .codeSubmitButton {

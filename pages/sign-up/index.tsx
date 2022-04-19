@@ -86,9 +86,9 @@ const Login: NextPage = () => {
     };
 
     return (
-        <div>
+        <div className="container py-4 mx-auto">
             <form onSubmit={handleSubmit} className={styles.signUpForm}>
-                <h1>Sign Up</h1>
+                <h1 className="text-xl">Sign Up</h1>
 
                 <div className={styles.inputGroup}>
                     <label>Username:</label>
@@ -153,11 +153,13 @@ const Login: NextPage = () => {
                 )}
 
                 <div className={styles.inputGroup}>
-                    <div className={styles.signUpLink}>
+                    <div className={`${styles.signInLink} text-center`}>
                         <Link href="/login">Log In</Link>
                     </div>
 
-                    <button type="submit">Sign Up</button>
+                    <button className="mt-4" type="submit">
+                        Sign Up
+                    </button>
                 </div>
             </form>
         </div>

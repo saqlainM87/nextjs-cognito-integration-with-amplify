@@ -157,7 +157,10 @@ const Login: NextPage = () => {
                         <Link href="/login">Log In</Link>
                     </div>
 
-                    <button className="mt-4" type="submit">
+                    <button
+                        className="mt-4 bg-indigo-800 text-white"
+                        type="submit"
+                    >
                         Sign Up
                     </button>
                 </div>

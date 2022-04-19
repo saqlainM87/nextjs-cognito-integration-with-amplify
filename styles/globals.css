@@ -12,8 +12,6 @@ a {
 @tailwind utilities;
 
 button {
-    background-color: rgb(55 48 163) !important ;
-    color: white;
     padding: 0.5rem 1rem;
     border-radius: 4px;
 }

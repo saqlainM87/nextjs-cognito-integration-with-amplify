@@ -28,6 +28,7 @@ export const getServerSideProps: GetServerSideProps = async ({ res }) => {
 const Login: NextPage = () => {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
+    const [code, setCode] = useState('');
     const router = useRouter();
 
     const signIn = async () => {
@@ -80,21 +81,24 @@ const Login: NextPage = () => {
                 </div>
 
                 <div
-                    className={`${styles.inputGroup} flex flex-col align-center text-center`}
+                    className={`${styles.inputGroup} flex flex-col items-center text-center`}
                 >
                     <div
-                        className={`${styles.link} flex flex-col align-center text-center`}
+                        className={`${styles.link} flex flex-col items-center text-center`}
                     >
                         <Link href="/sign-up">Sign Up</Link>
                     </div>
 
                     <div
-                        className={`${styles.link} flex flex-col align-center text-center`}
+                        className={`${styles.link} flex flex-col items-center text-center`}
                     >
                         <Link href="/forgot-password">Forgot Password?</Link>
                     </div>
 
-                    <button className="mt-4" type="submit">
+                    <button
+                        className="mt-4 bg-indigo-800 text-white"
+                        type="submit"
+                    >
                         Login
                     </button>
                 </div>

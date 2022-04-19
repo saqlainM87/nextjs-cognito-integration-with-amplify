@@ -93,7 +93,9 @@ const Dashboard: NextPage<DashboardProp> = ({ userInfo }) => {
             <br />
             <br />
 
-            <button onClick={handleLogout}>Logout</button>
+            <button className="bg-indigo-800 text-white" onClick={handleLogout}>
+                Logout
+            </button>
         </div>
     );
 };

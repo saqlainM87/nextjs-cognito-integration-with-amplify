@@ -1,15 +1,18 @@
 import { GetServerSideProps, NextPage } from 'next';
 import { useState } from 'react';
 import { useRouter } from 'next/router';
-import { Auth } from 'aws-amplify';
-import axios from 'axios';
+import { Auth, withSSRContext } from 'aws-amplify';
 import Link from 'next/link';
 
 import styles from './Login.module.css';
 
-export const getServerSideProps: GetServerSideProps = async ({ res }) => {
+export const getServerSideProps: GetServerSideProps = async (context) => {
+    const { res } = context;
+
     try {
-        const userInfo = await Auth.currentUserInfo();
+        const { Auth } = withSSRContext(context);
+
+        const userInfo = await Auth.currentAuthenticatedUser();
 
         if (userInfo) {
             res.setHeader('location', '/dashboard');
@@ -29,21 +32,37 @@ const Login: NextPage = () => {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [code, setCode] = useState('');
+    const [needMFA, setNeedMFA] = useState(false);
+    const [user, setUser] = useState();
     const router = useRouter();
 
     const signIn = async () => {
         try {
-            // const user = await Auth.signIn(username, password); // Logs in at client side
-            const response = await axios.post('/api/signIn', {
-                username,
-                password,
-            }); // Logs in at server side
+            const user = await Auth.signIn(username, password);
+            setUser(user);
 
-            if (
-                response
-                // && user
-            ) {
+            if (user.challengeName === 'SOFTWARE_TOKEN_MFA') {
+                return setNeedMFA(true);
+            }
+
+            if (user) {
                 router.push('/dashboard');
+            }
+        } catch (error) {
+            alert(`Error signing in: ${error}`);
+        }
+    };
+
+    const confirmSignIn = async () => {
+        try {
+            const loggedUser = await Auth.confirmSignIn(
+                user,
+                code,
+                'SOFTWARE_TOKEN_MFA'
+            ); // Confirm login with code
+
+            if (loggedUser) {
+                router.replace('/dashboard');
             }
         } catch (error) {
             alert(`Error signing in: ${error}`);
@@ -55,10 +74,14 @@ const Login: NextPage = () => {
         signIn();
     };
 
+    const handleVerifyCode = () => {
+        confirmSignIn();
+    };
+
     return (
         <div className="container py-4 mx-auto">
             <form onSubmit={handleSubmit} className={styles.loginForm}>
-                <h1 className="text-xl">Log In</h1>
+                <h1 className="text-xl mb-4">Log In</h1>
 
                 <div className={styles.inputGroup}>
                     <label>Username/Email:</label>
@@ -80,6 +103,26 @@ const Login: NextPage = () => {
                     />
                 </div>
 
+                {needMFA && (
+                    <div className={styles.inputGroup}>
+                        <label>Code:</label>
+                        <input
+                            name="code"
+                            type="number"
+                            value={code}
+                            onChange={(event) => setCode(event.target.value)}
+                        />
+
+                        <button
+                            className="ml-2 text-white bg-indigo-800"
+                            type="button"
+                            onClick={handleVerifyCode}
+                        >
+                            Submit
+                        </button>
+                    </div>
+                )}
+
                 <div
                     className={`${styles.inputGroup} flex flex-col items-center text-center`}
                 >
@@ -96,7 +139,10 @@ const Login: NextPage = () => {
                     </div>
 
                     <button
-                        className="mt-4 bg-indigo-800 text-white"
+                        disabled={needMFA}
+                        className={`mt-4 text-white ${
+                            needMFA ? 'bg-gray-300' : 'bg-indigo-800'
+                        }`}
                         type="submit"
                     >
                         Login

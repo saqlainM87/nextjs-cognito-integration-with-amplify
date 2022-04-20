@@ -17,7 +17,7 @@ const ForgotPassword: NextPage = () => {
             const response = await Auth.forgotPassword(username);
 
             if (response) {
-                alert('Code sent to email successfully for reset.');
+                alert('Code sent to email successfully for password reset.');
                 setIsOTPSent(true);
             }
         } catch (error) {
@@ -52,13 +52,17 @@ const ForgotPassword: NextPage = () => {
         resetPassword();
     };
 
+    const handleResend = () => {
+        requestForReset();
+    };
+
     return (
         <div className="container py-4 mx-auto">
             <form
                 onSubmit={handleSubmit}
                 className="flex flex-col items-center justify-center"
             >
-                <h1 className="text-xl">Forgot Password?</h1>
+                <h1 className="text-xl mb-4">Forgot Password?</h1>
 
                 <div className="my-4">
                     <label className="px-4">Username/Email:</label>
@@ -82,6 +86,13 @@ const ForgotPassword: NextPage = () => {
                                     setCode(event.target.value)
                                 }
                             />
+                            <button
+                                onClick={handleResend}
+                                className="ml-2 mt-4 bg-indigo-800 text-white"
+                                type="button"
+                            >
+                                Resend
+                            </button>
                         </div>
 
                         <div>

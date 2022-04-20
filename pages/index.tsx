@@ -1,13 +1,17 @@
-import { Auth } from 'aws-amplify';
+import { withSSRContext } from 'aws-amplify';
 import type { GetServerSideProps, NextPage } from 'next';
 import Head from 'next/head';
 import Image from 'next/image';
 
 import styles from '../styles/Home.module.css';
 
-export const getServerSideProps: GetServerSideProps = async ({ res }) => {
+export const getServerSideProps: GetServerSideProps = async (context) => {
+    const { res } = context;
+
     try {
-        const userInfo = await Auth.currentUserInfo();
+        const { Auth } = withSSRContext(context);
+
+        const userInfo = await Auth.currentAuthenticatedUser();
 
         if (userInfo) {
             res.setHeader('location', '/dashboard');

@@ -50,7 +50,12 @@ Amplify.configure({
         // OPTIONAL - Hosted UI configuration
         oauth: {
             domain: process.env.NEXT_PUBLIC_COGNITO_DOMAIN,
-            scope: ['email', 'profile', 'openid'],
+            scope: [
+                'email',
+                'profile',
+                'openid',
+                'aws.cognito.signin.user.admin',
+            ],
             redirectSignIn: process.env.NEXT_PUBLIC_COGNITO_REDIRECT_SIGN_IN,
             redirectSignOut: process.env.NEXT_PUBLIC_COGNITO_REDIRECT_SIGN_OUT,
             responseType: 'code', // or 'token', note that REFRESH token will only be generated when the responseType is code

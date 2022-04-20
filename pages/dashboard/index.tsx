@@ -1,7 +1,7 @@
 import { NextPage, GetServerSideProps } from 'next';
-import { Auth } from 'aws-amplify';
+import { Auth, withSSRContext } from 'aws-amplify';
 import { useRouter } from 'next/router';
-import axios from 'axios';
+import Link from 'next/link';
 
 interface DashboardProp {
     userInfo?: {
@@ -14,11 +14,15 @@ interface DashboardProp {
     };
 }
 
-export const getServerSideProps: GetServerSideProps<DashboardProp> = async ({
-    res,
-}) => {
+export const getServerSideProps: GetServerSideProps<DashboardProp> = async (
+    context
+) => {
+    const { res } = context;
+
     try {
-        const userInfo = await Auth.currentUserInfo();
+        const { Auth } = withSSRContext(context);
+
+        const userInfo = await Auth.currentAuthenticatedUser();
 
         if (userInfo) {
             return {
@@ -35,13 +39,7 @@ export const getServerSideProps: GetServerSideProps<DashboardProp> = async ({
             };
         }
     } catch (error) {
-        res.setHeader('location', '/login');
-        res.statusCode = 302;
-        res.end();
-
-        return {
-            props: {},
-        };
+        //
     }
 
     res.setHeader('location', '/login');
@@ -58,12 +56,11 @@ const Dashboard: NextPage<DashboardProp> = ({ userInfo }) => {
 
     const signOut = async () => {
         try {
-            // await Auth.signOut(); // Logs out from client side
-            await axios.get('/api/signOut'); //Logs out from server side
+            await Auth.signOut();
 
             router.replace('/login');
         } catch (error) {
-            console.log('error signing out: ', error);
+            alert('error signing out: ' + error);
         }
     };
 
@@ -72,8 +69,14 @@ const Dashboard: NextPage<DashboardProp> = ({ userInfo }) => {
     };
 
     return (
-        <div>
-            <h1>Dashboard</h1>
+        <div className="container py-4 mx-auto">
+            <h1 className="text-xl mb-4">Dashboard</h1>
+
+            <div className="float-right">
+                <button className="bg-indigo-800 text-white">
+                    <Link href="/mfa-setting">MFA Setting</Link>
+                </button>
+            </div>
 
             <span>
                 Welcome, <strong>{userInfo?.attributes.name}</strong>

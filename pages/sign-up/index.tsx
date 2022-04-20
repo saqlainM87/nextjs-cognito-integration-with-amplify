@@ -2,13 +2,13 @@ import { GetServerSideProps, NextPage } from 'next';
 import { useState } from 'react';
 import { useRouter } from 'next/router';
 import { Auth } from 'aws-amplify';
+import Link from 'next/link';
 
 import styles from './SignUp.module.css';
-import Link from 'next/link';
 
 export const getServerSideProps: GetServerSideProps = async ({ res }) => {
     try {
-        const userInfo = await Auth.currentUserInfo();
+        const userInfo = await Auth.currentAuthenticatedUser();
 
         if (userInfo) {
             res.setHeader('location', '/dashboard');
@@ -25,13 +25,13 @@ export const getServerSideProps: GetServerSideProps = async ({ res }) => {
 };
 
 const Login: NextPage = () => {
+    const router = useRouter();
     const [username, setUsername] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [name, setName] = useState('');
     const [isOTPSent, setIsOTPSent] = useState(false);
     const [code, setCode] = useState('');
-    const router = useRouter();
 
     const signUp = async () => {
         try {
@@ -59,7 +59,7 @@ const Login: NextPage = () => {
             alert('code verified successfully');
             router.push('/login');
         } catch (error) {
-            console.log('error confirming sign up', error);
+            alert('error confirming sign up' + error);
         }
     };
 
@@ -67,8 +67,8 @@ const Login: NextPage = () => {
         try {
             await Auth.resendSignUp(username);
             alert('code resent successfully');
-        } catch (err) {
-            console.log('error resending code: ', err);
+        } catch (error) {
+            alert('error resending code: ' + error);
         }
     };
 
@@ -88,7 +88,7 @@ const Login: NextPage = () => {
     return (
         <div className="container py-4 mx-auto">
             <form onSubmit={handleSubmit} className={styles.signUpForm}>
-                <h1 className="text-xl">Sign Up</h1>
+                <h1 className="text-xl mb-4">Sign Up</h1>
 
                 <div className={styles.inputGroup}>
                     <label>Username:</label>
@@ -140,13 +140,17 @@ const Login: NextPage = () => {
                             onChange={(event) => setCode(event.target.value)}
                         />
                         <button
-                            className={styles.codeSubmitButton}
+                            className={`${styles.codeSubmitButton} bg-indigo-800 text-white`}
                             type="button"
                             onClick={handleVerification}
                         >
                             Submit
                         </button>
-                        <button onClick={handleResend} type="button">
+                        <button
+                            className="bg-indigo-800 text-white"
+                            onClick={handleResend}
+                            type="button"
+                        >
                             Resend
                         </button>
                     </div>
@@ -158,7 +162,10 @@ const Login: NextPage = () => {
                     </div>
 
                     <button
-                        className="mt-4 bg-indigo-800 text-white"
+                        disabled={isOTPSent}
+                        className={`mt-4 text-white ${
+                            isOTPSent ? 'bg-gray-300' : 'bg-indigo-800'
+                        }`}
                         type="submit"
                     >
                         Sign Up

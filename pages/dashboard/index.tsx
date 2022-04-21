@@ -69,7 +69,7 @@ const Dashboard: NextPage<DashboardProp> = ({ userInfo }) => {
     };
 
     return (
-        <div className="container py-4 mx-auto">
+        <div className="md:container p-4 mx-auto">
             <h1 className="text-xl mb-4">Dashboard</h1>
 
             <div className="float-right">

@@ -5,13 +5,27 @@ import { Auth, withSSRContext } from 'aws-amplify';
 import Link from 'next/link';
 import QRCode from 'qrcode.react';
 
-export const getServerSideProps: GetServerSideProps = async (context) => {
+interface MFASettingProps {
+    mfaType?: string;
+}
+
+export const getServerSideProps: GetServerSideProps<MFASettingProps> = async (
+    context
+) => {
     const { res } = context;
 
     try {
         const { Auth } = withSSRContext(context);
 
-        await Auth.currentAuthenticatedUser();
+        const user = await Auth.currentAuthenticatedUser();
+
+        const preferredMFA = await Auth.getPreferredMFA(user);
+
+        return {
+            props: {
+                mfaType: preferredMFA,
+            },
+        };
     } catch (error) {
         res.setHeader('location', '/login');
         res.statusCode = 302;
@@ -23,11 +37,9 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     };
 };
 
-const MFASetting: NextPage = () => {
+const MFASetting: NextPage<MFASettingProps> = ({ mfaType }) => {
     const router = useRouter();
-    const [username, setUsername] = useState('');
     const [token, setToken] = useState('');
-    const [isOTPSent, setIsOTPSent] = useState(false);
     const [qrCodeValue, setQrCodeValue] = useState('');
     const [user, setUser] = useState();
 
@@ -42,7 +54,7 @@ const MFASetting: NextPage = () => {
 
             if (code) {
                 setQrCodeValue(
-                    `otpauth://totp/AWSCognito:${username}?secret=${code}&issuer=Cognito`
+                    `otpauth://totp/AWSCognito:${user?.username}?secret=${code}&issuer=Cognito`
                 );
             }
         } catch (error) {
@@ -68,8 +80,27 @@ const MFASetting: NextPage = () => {
         }
     };
 
-    const handleEnableMFA = () => {
-        setupTOTP();
+    const disableMFA = async () => {
+        try {
+            const user = await Auth.currentAuthenticatedUser();
+
+            const response = await Auth.setPreferredMFA(user, 'NOMFA');
+
+            if (response) {
+                alert('MFA disabled successfully.');
+                router.push('/dashboard');
+            }
+        } catch (error) {
+            alert(`Error disabling MFA: ${error}`);
+        }
+    };
+
+    const handleSetMFA = () => {
+        if (mfaType !== 'NOMFA') {
+            disableMFA();
+        } else {
+            setupTOTP();
+        }
     };
 
     const handleVerifyToken = () => {
@@ -77,7 +108,7 @@ const MFASetting: NextPage = () => {
     };
 
     return (
-        <div className="container py-4 mx-auto">
+        <div className="md:container p-4 mx-auto">
             <h1 className="text-xl mb-4">MFA Setting</h1>
 
             <Link replace={true} href="/dashboard">
@@ -86,18 +117,23 @@ const MFASetting: NextPage = () => {
 
             <div className={`flex flex-col items-center text-center mt-4`}>
                 <button
-                    disabled={isOTPSent}
+                    disabled={Boolean(qrCodeValue)}
                     className={`my-4 text-white ${
-                        isOTPSent ? 'bg-gray-300' : 'bg-indigo-800'
+                        qrCodeValue ? 'bg-gray-300' : 'bg-indigo-800'
                     }`}
                     type="submit"
-                    onClick={handleEnableMFA}
+                    onClick={handleSetMFA}
                 >
-                    Enable MFA
+                    {mfaType !== 'NOMFA' ? 'Disable' : 'Enable'} MFA
                 </button>
 
                 {qrCodeValue && (
                     <div className="flex flex-col items-center">
+                        <h3 className="text-base font-bold mb-4">
+                            Scan the QR Code with your authentication app and
+                            enter the generated token
+                        </h3>
+
                         <QRCode value={qrCodeValue} />
 
                         <div className="my-4">

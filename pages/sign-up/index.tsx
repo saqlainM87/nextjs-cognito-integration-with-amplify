@@ -86,7 +86,7 @@ const Login: NextPage = () => {
     };
 
     return (
-        <div className="container py-4 mx-auto">
+        <div className="md:container p-4 mx-auto">
             <form onSubmit={handleSubmit} className={styles.signUpForm}>
                 <h1 className="text-xl mb-4">Sign Up</h1>
 

@@ -57,7 +57,7 @@ const ForgotPassword: NextPage = () => {
     };
 
     return (
-        <div className="container py-4 mx-auto">
+        <div className="md:container p-4 mx-auto">
             <form
                 onSubmit={handleSubmit}
                 className="flex flex-col items-center justify-center"

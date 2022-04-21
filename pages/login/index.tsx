@@ -29,7 +29,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 };
 
 const Login: NextPage = () => {
-    const [username, setUsername] = useState('');
+    const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [code, setCode] = useState('');
     const [needMFA, setNeedMFA] = useState(false);
@@ -38,8 +38,10 @@ const Login: NextPage = () => {
 
     const signIn = async () => {
         try {
-            const user = await Auth.signIn(username, password);
+            const user = await Auth.signIn(email, password);
             setUser(user);
+
+            console.log(user);
 
             if (user.challengeName === 'SOFTWARE_TOKEN_MFA') {
                 return setNeedMFA(true);
@@ -84,12 +86,12 @@ const Login: NextPage = () => {
                 <h1 className="text-xl mb-4">Log In</h1>
 
                 <div className={styles.inputGroup}>
-                    <label>Username/Email:</label>
+                    <label>Email:</label>
                     <input
-                        name="username"
-                        type="text"
-                        value={username}
-                        onChange={(event) => setUsername(event.target.value)}
+                        name="email"
+                        type="email"
+                        value={email}
+                        onChange={(event) => setEmail(event.target.value)}
                     />
                 </div>
 

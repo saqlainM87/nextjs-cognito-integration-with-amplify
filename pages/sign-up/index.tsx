@@ -36,10 +36,10 @@ const Login: NextPage = () => {
     const signUp = async () => {
         try {
             const { user } = await Auth.signUp({
-                username,
+                username: email,
                 password,
                 attributes: {
-                    email,
+                    preferred_username: username,
                     name,
                 },
             });
@@ -55,8 +55,8 @@ const Login: NextPage = () => {
 
     const confirmSignUp = async () => {
         try {
-            await Auth.confirmSignUp(username, code);
-            alert('code verified successfully');
+            await Auth.confirmSignUp(email, code);
+            alert('Code verified successfully');
             router.push('/login');
         } catch (error) {
             alert('error confirming sign up' + error);
@@ -65,7 +65,7 @@ const Login: NextPage = () => {
 
     const resendConfirmationCode = async () => {
         try {
-            await Auth.resendSignUp(username);
+            await Auth.resendSignUp(email);
             alert('code resent successfully');
         } catch (error) {
             alert('error resending code: ' + error);
@@ -91,22 +91,22 @@ const Login: NextPage = () => {
                 <h1 className="text-xl mb-4">Sign Up</h1>
 
                 <div className={styles.inputGroup}>
-                    <label>Username:</label>
-                    <input
-                        name="username"
-                        type="text"
-                        value={username}
-                        onChange={(event) => setUsername(event.target.value)}
-                    />
-                </div>
-
-                <div className={styles.inputGroup}>
                     <label>Email:</label>
                     <input
                         name="email"
                         type="email"
                         value={email}
                         onChange={(event) => setEmail(event.target.value)}
+                    />
+                </div>
+
+                <div className={styles.inputGroup}>
+                    <label>Username:</label>
+                    <input
+                        name="username"
+                        type="text"
+                        value={username}
+                        onChange={(event) => setUsername(event.target.value)}
                     />
                 </div>
 
@@ -161,15 +161,21 @@ const Login: NextPage = () => {
                         <Link href="/login">Log In</Link>
                     </div>
 
-                    <button
-                        disabled={isOTPSent}
-                        className={`mt-4 text-white ${
-                            isOTPSent ? 'bg-gray-300' : 'bg-indigo-800'
-                        }`}
-                        type="submit"
-                    >
-                        Sign Up
-                    </button>
+                    <div className={`${styles.signInLink} text-center`}>
+                        <Link href="/resend-email">Resend Sign Up Email</Link>
+                    </div>
+
+                    <div className="flex justify-center">
+                        <button
+                            disabled={isOTPSent}
+                            className={`mt-4 text-white ${
+                                isOTPSent ? 'bg-gray-300' : 'bg-indigo-800'
+                            }`}
+                            type="submit"
+                        >
+                            Sign Up
+                        </button>
+                    </div>
                 </div>
             </form>
         </div>

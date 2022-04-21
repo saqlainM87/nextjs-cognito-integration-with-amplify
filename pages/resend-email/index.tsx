@@ -4,56 +4,46 @@ import { useRouter } from 'next/router';
 import { Auth } from 'aws-amplify';
 import Link from 'next/link';
 
-const ForgotPassword: NextPage = () => {
+const ResendEmail: NextPage = () => {
     const router = useRouter();
     const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
     const [code, setCode] = useState('');
     const [isOTPSent, setIsOTPSent] = useState(false);
 
-    const requestForReset = async () => {
+    const resendEmail = async () => {
         try {
-            // Send confirmation code to user's email
-            const response = await Auth.forgotPassword(email);
+            const response = await Auth.resendSignUp(email);
 
             if (response) {
-                alert('Code sent to email successfully for password reset.');
+                alert('Code sent to your email successfully.');
                 setIsOTPSent(true);
             }
         } catch (error) {
-            alert(`Error requesting reset password: ${error}`);
+            alert(`Error sending email: ${error}`);
         }
     };
 
-    const resetPassword = async () => {
+    const confirmSignUp = async () => {
         try {
-            // Collect confirmation code and new password, then
-            const response = await Auth.forgotPasswordSubmit(
-                email,
-                code,
-                password
-            );
-
-            if (response) {
-                alert('Password reset successful');
-                router.push('/login');
-            }
+            await Auth.confirmSignUp(email, code);
+            alert('Code verified successfully');
+            router.push('/login');
         } catch (error) {
-            alert(`Error resetting password: ${error}`);
+            alert('error confirming sign up' + error);
         }
     };
 
     const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
-        requestForReset();
-    };
-
-    const handleReset = () => {
-        resetPassword();
+        resendEmail();
     };
 
     const handleResend = () => {
-        requestForReset();
+        resendEmail();
+    };
+
+    const handleConfirmEmail = () => {
+        confirmSignUp();
     };
 
     return (
@@ -62,7 +52,7 @@ const ForgotPassword: NextPage = () => {
                 onSubmit={handleSubmit}
                 className="flex flex-col items-center justify-center"
             >
-                <h1 className="text-xl mb-4">Forgot Password?</h1>
+                <h1 className="text-xl mb-4">Resend Sign Up Email</h1>
 
                 <div className="my-4">
                     <label className="px-4">Email:</label>
@@ -95,20 +85,8 @@ const ForgotPassword: NextPage = () => {
                             </button>
                         </div>
 
-                        <div>
-                            <label className="px-4">New Password:</label>
-                            <input
-                                name="password"
-                                type="password"
-                                value={password}
-                                onChange={(event) =>
-                                    setPassword(event.target.value)
-                                }
-                            />
-                        </div>
-
                         <button
-                            onClick={handleReset}
+                            onClick={handleConfirmEmail}
                             className="mt-4 bg-indigo-800 text-white"
                             type="button"
                         >
@@ -122,6 +100,10 @@ const ForgotPassword: NextPage = () => {
                         <Link href="/login">Login</Link>
                     </div>
 
+                    <div className={`flex flex-col items-center text-center`}>
+                        <Link href="/sign-up">Sign Up</Link>
+                    </div>
+
                     <button
                         disabled={isOTPSent}
                         className={`mt-4 text-white ${
@@ -129,7 +111,7 @@ const ForgotPassword: NextPage = () => {
                         }`}
                         type="submit"
                     >
-                        Request for Reset
+                        Resend
                     </button>
                 </div>
             </form>
@@ -137,4 +119,4 @@ const ForgotPassword: NextPage = () => {
     );
 };
 
-export default ForgotPassword;
+export default ResendEmail;

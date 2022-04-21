@@ -28,7 +28,7 @@ export const getServerSideProps: GetServerSideProps<DashboardProp> = async (
             return {
                 props: {
                     userInfo: {
-                        username: userInfo.username || '',
+                        username: userInfo.attributes?.preferred_username || '',
                         attributes: {
                             sub: userInfo.attributes?.sub || '',
                             name: userInfo.attributes?.name || '',
@@ -39,12 +39,12 @@ export const getServerSideProps: GetServerSideProps<DashboardProp> = async (
             };
         }
     } catch (error) {
-        //
+        console.error(error);
     }
 
-    res.setHeader('location', '/login');
-    res.statusCode = 302;
-    res.end();
+    // res.setHeader('location', '/login');
+    // res.statusCode = 302;
+    // res.end();
 
     return {
         props: {},

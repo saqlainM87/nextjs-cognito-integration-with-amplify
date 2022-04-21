@@ -130,7 +130,7 @@ const MFASetting: NextPage<MFASettingProps> = ({ mfaType }) => {
                 {qrCodeValue && (
                     <div className="flex flex-col items-center">
                         <h3 className="text-base font-bold mb-4">
-                            Scan the QR Code with your authentication app and
+                            Scan the QR Code with your authenticator app and
                             enter the generated token
                         </h3>
 

@@ -1,10 +1,12 @@
 import { GetServerSideProps, NextPage } from 'next';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
-import { Auth, withSSRContext } from 'aws-amplify';
+import { Auth, Hub, withSSRContext } from 'aws-amplify';
 import Link from 'next/link';
+import { CognitoHostedUIIdentityProvider } from '@aws-amplify/auth';
 
 import styles from './Login.module.css';
+import Image from 'next/image';
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
     const { res } = context;
@@ -40,8 +42,6 @@ const Login: NextPage = () => {
         try {
             const user = await Auth.signIn(email, password);
             setUser(user);
-
-            console.log(user);
 
             if (user.challengeName === 'SOFTWARE_TOKEN_MFA') {
                 return setNeedMFA(true);
@@ -148,6 +148,26 @@ const Login: NextPage = () => {
                         type="submit"
                     >
                         Login
+                    </button>
+
+                    <button
+                        className="mt-4 text-white bg-indigo-800 flex justify-center items-center"
+                        type="button"
+                        onClick={() =>
+                            Auth.federatedSignIn({
+                                provider:
+                                    CognitoHostedUIIdentityProvider.Google,
+                            })
+                        }
+                    >
+                        <Image
+                            className="rounded-full"
+                            src="https://image.similarpng.com/very-thumbnail/2020/12/Illustration-of-Google-icon-on-transparent-background-PNG.png"
+                            alt=""
+                            width="35px"
+                            height="35px"
+                        />
+                        <span className="ml-2">Login with Google</span>
                     </button>
                 </div>
             </form>

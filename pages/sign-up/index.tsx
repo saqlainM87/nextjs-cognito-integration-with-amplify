@@ -135,7 +135,7 @@ const Login: NextPage = () => {
                         <label>Code:</label>
                         <input
                             name="code"
-                            type="code"
+                            type="number"
                             value={code}
                             onChange={(event) => setCode(event.target.value)}
                         />

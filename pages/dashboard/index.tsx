@@ -2,6 +2,7 @@ import { NextPage, GetServerSideProps } from 'next';
 import { Auth, withSSRContext } from 'aws-amplify';
 import { useRouter } from 'next/router';
 import Link from 'next/link';
+import { useEffect, useState } from 'react';
 
 interface DashboardProp {
     userInfo?: {
@@ -39,12 +40,8 @@ export const getServerSideProps: GetServerSideProps<DashboardProp> = async (
             };
         }
     } catch (error) {
-        console.error(error);
+        //
     }
-
-    // res.setHeader('location', '/login');
-    // res.statusCode = 302;
-    // res.end();
 
     return {
         props: {},
@@ -53,6 +50,26 @@ export const getServerSideProps: GetServerSideProps<DashboardProp> = async (
 
 const Dashboard: NextPage<DashboardProp> = ({ userInfo }) => {
     const router = useRouter();
+    const [user, setUser] = useState(userInfo);
+
+    useEffect(() => {
+        const getAndSetUser = async () => {
+            try {
+                const user = await Auth.currentAuthenticatedUser();
+
+                if (user) {
+                    setUser(user);
+                }
+            } catch (error) {
+                router.replace('/login');
+            }
+        };
+
+        if (!userInfo) {
+            getAndSetUser();
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
 
     const signOut = async () => {
         try {
@@ -79,19 +96,19 @@ const Dashboard: NextPage<DashboardProp> = ({ userInfo }) => {
             </div>
 
             <span>
-                Welcome, <strong>{userInfo?.attributes.name}</strong>
+                Welcome, <strong>{user?.attributes.name}</strong>
             </span>
             <br />
             <span>
-                Your Email: <strong>{userInfo?.attributes.email}</strong>
+                Your Email: <strong>{user?.attributes.email}</strong>
             </span>
             <br />
             <span>
-                Your Username: <strong>{userInfo?.username}</strong>
+                Your Username: <strong>{user?.username}</strong>
             </span>
             <br />
             <span>
-                Your UID: <strong>{userInfo?.attributes?.sub}</strong>
+                Your UID: <strong>{user?.attributes?.sub}</strong>
             </span>
             <br />
             <br />

@@ -80,7 +80,7 @@ const ForgotPassword: NextPage = () => {
                             <label className="px-4">Code:</label>
                             <input
                                 name="code"
-                                type="text"
+                                type="number"
                                 value={code}
                                 onChange={(event) =>
                                     setCode(event.target.value)

@@ -7,6 +7,7 @@ import QRCode from 'qrcode.react';
 
 interface MFASettingProps {
     mfaType?: string;
+    hasIdentities?: boolean;
 }
 
 export const getServerSideProps: GetServerSideProps<MFASettingProps> = async (
@@ -24,6 +25,7 @@ export const getServerSideProps: GetServerSideProps<MFASettingProps> = async (
         return {
             props: {
                 mfaType: preferredMFA,
+                hasIdentities: Boolean(user?.attributes?.identities),
             },
         };
     } catch (error) {
@@ -37,7 +39,7 @@ export const getServerSideProps: GetServerSideProps<MFASettingProps> = async (
     };
 };
 
-const MFASetting: NextPage<MFASettingProps> = ({ mfaType }) => {
+const MFASetting: NextPage<MFASettingProps> = ({ mfaType, hasIdentities }) => {
     const router = useRouter();
     const [token, setToken] = useState('');
     const [qrCodeValue, setQrCodeValue] = useState('');
@@ -117,9 +119,11 @@ const MFASetting: NextPage<MFASettingProps> = ({ mfaType }) => {
 
             <div className={`flex flex-col items-center text-center mt-4`}>
                 <button
-                    disabled={Boolean(qrCodeValue)}
+                    disabled={Boolean(qrCodeValue) || hasIdentities}
                     className={`my-4 text-white ${
-                        qrCodeValue ? 'bg-gray-300' : 'bg-indigo-800'
+                        Boolean(qrCodeValue) || hasIdentities
+                            ? 'bg-gray-300'
+                            : 'bg-indigo-800'
                     }`}
                     type="submit"
                     onClick={handleSetMFA}

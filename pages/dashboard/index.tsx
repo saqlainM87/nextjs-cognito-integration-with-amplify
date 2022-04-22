@@ -81,8 +81,30 @@ const Dashboard: NextPage<DashboardProp> = ({ userInfo }) => {
         }
     };
 
+    const confirmDelete = async () => {
+        const answer = confirm('Are you sure?');
+
+        if (answer) {
+            try {
+                const result = await Auth.deleteUser();
+
+                if (result) {
+                    alert('Your accounted has been deleted successfully.');
+
+                    router.replace('/login');
+                }
+            } catch (error) {
+                alert('Error deleting user ' + error);
+            }
+        }
+    };
+
     const handleLogout = () => {
         signOut();
+    };
+
+    const handleDelete = () => {
+        confirmDelete();
     };
 
     return (
@@ -90,9 +112,20 @@ const Dashboard: NextPage<DashboardProp> = ({ userInfo }) => {
             <h1 className="text-xl mb-4">Dashboard</h1>
 
             <div className="float-right">
-                <button className="bg-indigo-800 text-white">
-                    <Link href="/mfa-setting">MFA Setting</Link>
-                </button>
+                <div className="mb-2 flex justify-end">
+                    <button className="bg-indigo-800 text-white">
+                        <Link href="/mfa-setting">MFA Setting</Link>
+                    </button>
+                </div>
+
+                <div className="flex justify-end">
+                    <button
+                        onClick={handleDelete}
+                        className="bg-red-800 text-white"
+                    >
+                        Delete My Account
+                    </button>
+                </div>
             </div>
 
             <span>

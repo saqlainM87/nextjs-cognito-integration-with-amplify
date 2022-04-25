@@ -86,8 +86,11 @@ const Login: NextPage = () => {
     };
 
     return (
-        <div className="md:container p-4 mx-auto">
-            <form onSubmit={handleSubmit} className={styles.signUpForm}>
+        <div className="md:container p-4 mx-auto flex justify-center items-center h-screen">
+            <form
+                onSubmit={handleSubmit}
+                className={`${styles.signUpForm} w-fit bg-indigo-300 rounded-md p-6`}
+            >
                 <h1 className="text-xl mb-4">Sign Up</h1>
 
                 <div className={styles.inputGroup}>

@@ -1,7 +1,7 @@
 import { GetServerSideProps, NextPage } from 'next';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { useRouter } from 'next/router';
-import { Auth, Hub, withSSRContext } from 'aws-amplify';
+import { Auth, withSSRContext } from 'aws-amplify';
 import Link from 'next/link';
 import { CognitoHostedUIIdentityProvider } from '@aws-amplify/auth';
 
@@ -81,8 +81,11 @@ const Login: NextPage = () => {
     };
 
     return (
-        <div className="md:container p-4 mx-auto">
-            <form onSubmit={handleSubmit} className={styles.loginForm}>
+        <div className="md:container p-4 mx-auto flex justify-center items-center h-screen">
+            <form
+                onSubmit={handleSubmit}
+                className={`${styles.loginForm} w-fit bg-indigo-300 rounded-md p-6`}
+            >
                 <h1 className="text-xl mb-4">Log In</h1>
 
                 <div className={styles.inputGroup}>
@@ -151,7 +154,10 @@ const Login: NextPage = () => {
                     </button>
 
                     <button
-                        className="mt-4 text-white bg-indigo-800 flex justify-center items-center"
+                        disabled={needMFA}
+                        className={`mt-4 text-white ${
+                            needMFA ? 'bg-gray-300' : 'bg-indigo-800'
+                        } flex justify-center items-center`}
                         type="button"
                         onClick={() =>
                             Auth.federatedSignIn({

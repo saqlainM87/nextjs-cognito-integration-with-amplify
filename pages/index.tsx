@@ -1,19 +1,17 @@
-import { withSSRContext } from 'aws-amplify';
 import type { GetServerSideProps, NextPage } from 'next';
+import { getSession } from 'next-auth/react';
 import Head from 'next/head';
 import Image from 'next/image';
 
 import styles from '../styles/Home.module.css';
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
-    const { res } = context;
+    const { res, req } = context;
 
     try {
-        const { Auth } = withSSRContext(context);
+        const session: any = await getSession({ req });
 
-        const userInfo = await Auth.currentAuthenticatedUser();
-
-        if (userInfo) {
+        if (session) {
             res.setHeader('location', '/dashboard');
             res.statusCode = 302;
             res.end();

@@ -1,14 +1,14 @@
 import type { AppProps } from 'next/app';
-import { Amplify } from 'aws-amplify';
+import { SessionProvider } from 'next-auth/react';
 
 import '../styles/globals.css';
 
-import { amplifyConfig } from '../libs/amplify';
-
-Amplify.configure({ ...amplifyConfig, ssr: true });
-
-function MyApp({ Component, pageProps }: AppProps) {
-    return <Component {...pageProps} />;
+function MyApp({ Component, pageProps: { session, ...pageProps } }: AppProps) {
+    return (
+        <SessionProvider session={session} refetchInterval={0}>
+            <Component {...pageProps} />;
+        </SessionProvider>
+    );
 }
 
 export default MyApp;

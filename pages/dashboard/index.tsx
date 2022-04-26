@@ -1,12 +1,10 @@
 import { NextPage, GetServerSideProps } from 'next';
-import { Auth, withSSRContext } from 'aws-amplify';
-import { useRouter } from 'next/router';
-import Link from 'next/link';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
+import { getSession, signOut } from 'next-auth/react';
 
 interface DashboardProp {
     userInfo?: {
-        username: string;
+        username?: string;
         attributes: {
             sub: string;
             name: string;
@@ -18,26 +16,19 @@ interface DashboardProp {
 export const getServerSideProps: GetServerSideProps<DashboardProp> = async (
     context
 ) => {
-    const { res } = context;
+    const { res, req } = context;
 
     try {
-        const { Auth } = withSSRContext(context);
+        const session: any = await getSession({ req });
 
-        const userInfo = await Auth.currentAuthenticatedUser({
-            bypassCache: true,
-        });
-
-        console.log(userInfo.signInUserSession);
-
-        if (userInfo) {
+        if (session) {
             return {
                 props: {
                     userInfo: {
-                        username: userInfo.attributes?.preferred_username || '',
                         attributes: {
-                            sub: userInfo.attributes?.sub || '',
-                            name: userInfo.attributes?.name || '',
-                            email: userInfo.attributes?.email || '',
+                            sub: session?.user?.sub || '',
+                            name: session?.user?.name || '',
+                            email: session?.user?.email || '',
                         },
                     },
                 },
@@ -47,92 +38,35 @@ export const getServerSideProps: GetServerSideProps<DashboardProp> = async (
         //
     }
 
+    res.setHeader('location', '/login');
+    res.statusCode = 302;
+    res.end();
+
     return {
         props: {},
     };
 };
 
 const Dashboard: NextPage<DashboardProp> = ({ userInfo }) => {
-    const router = useRouter();
     const [user, setUser] = useState(userInfo);
 
-    useEffect(() => {
-        const getAndSetUser = async () => {
-            try {
-                const user = await Auth.currentAuthenticatedUser({
-                    bypassCache: true,
-                });
-
-                if (user) {
-                    setUser(user);
-                }
-            } catch (error) {
-                router.replace('/login');
-            }
-        };
-
-        if (!userInfo) {
-            getAndSetUser();
-        }
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
-
-    const signOut = async () => {
+    const logOut = async () => {
         try {
-            await Auth.signOut();
-
-            router.replace('/login');
+            await signOut({ callbackUrl: '/api/auth/logout' });
         } catch (error) {
-            alert('error signing out: ' + error);
-        }
-    };
-
-    const confirmDelete = async () => {
-        const answer = confirm('Are you sure?');
-
-        if (answer) {
-            try {
-                const result = await Auth.deleteUser();
-
-                if (result) {
-                    alert('Your accounted has been deleted successfully.');
-
-                    router.replace('/login');
-                }
-            } catch (error) {
-                alert('Error deleting user ' + error);
-            }
+            alert('Error signing out: ' + error);
         }
     };
 
     const handleLogout = () => {
-        signOut();
-    };
-
-    const handleDelete = () => {
-        confirmDelete();
+        logOut();
     };
 
     return (
         <div className="md:container p-4 mx-auto">
             <h1 className="text-xl mb-4">Dashboard</h1>
 
-            <div className="float-right">
-                <div className="mb-2 flex justify-end">
-                    <button className="bg-indigo-800 text-white">
-                        <Link href="/mfa-setting">MFA Setting</Link>
-                    </button>
-                </div>
-
-                <div className="flex justify-end">
-                    <button
-                        onClick={handleDelete}
-                        className="bg-red-800 text-white"
-                    >
-                        Delete My Account
-                    </button>
-                </div>
-            </div>
+            <div className="float-right"></div>
 
             <span>
                 Welcome, <strong>{user?.attributes.name}</strong>

@@ -23,7 +23,11 @@ export const getServerSideProps: GetServerSideProps<DashboardProp> = async (
     try {
         const { Auth } = withSSRContext(context);
 
-        const userInfo = await Auth.currentAuthenticatedUser();
+        const userInfo = await Auth.currentAuthenticatedUser({
+            bypassCache: true,
+        });
+
+        console.log(userInfo.signInUserSession);
 
         if (userInfo) {
             return {
@@ -55,7 +59,9 @@ const Dashboard: NextPage<DashboardProp> = ({ userInfo }) => {
     useEffect(() => {
         const getAndSetUser = async () => {
             try {
-                const user = await Auth.currentAuthenticatedUser();
+                const user = await Auth.currentAuthenticatedUser({
+                    bypassCache: true,
+                });
 
                 if (user) {
                     setUser(user);

@@ -18,7 +18,7 @@ export const getServerSideProps: GetServerSideProps<MFASettingProps> = async (
     try {
         const { Auth } = withSSRContext(context);
 
-        const user = await Auth.currentAuthenticatedUser();
+        const user = await Auth.currentAuthenticatedUser({ bypassCache: true });
 
         const preferredMFA = await Auth.getPreferredMFA(user);
 
@@ -47,7 +47,9 @@ const MFASetting: NextPage<MFASettingProps> = ({ mfaType, hasIdentities }) => {
 
     const setupTOTP = async () => {
         try {
-            const user = await Auth.currentAuthenticatedUser();
+            const user = await Auth.currentAuthenticatedUser({
+                bypassCache: true,
+            });
 
             setUser(user);
 

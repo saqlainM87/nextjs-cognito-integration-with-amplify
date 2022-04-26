@@ -72,7 +72,7 @@ const ResendEmail: NextPage = () => {
         <div className="md:container p-4 mx-auto flex justify-center items-center h-screen">
             <form
                 onSubmit={handleSubmit}
-                className="flex flex-col items-center justify-center w-fit bg-indigo-300 rounded-md p-6"
+                className="flex flex-col items-center justify-center w-fit bg-indigo-200 rounded-md p-6"
             >
                 <h1 className="text-xl mb-4">Resend Sign Up Email</h1>
 

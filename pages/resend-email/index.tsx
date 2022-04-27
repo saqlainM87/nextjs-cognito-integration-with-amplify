@@ -100,20 +100,20 @@ const ResendEmail: NextPage = () => {
                             />
                             <button
                                 onClick={handleResend}
-                                className="ml-2 mt-4 bg-indigo-800 text-white"
+                                className="mx-2 mt-4 bg-indigo-800 text-white"
                                 type="button"
                             >
                                 Resend
                             </button>
-                        </div>
 
-                        <button
-                            onClick={handleConfirmEmail}
-                            className="mt-4 bg-indigo-800 text-white"
-                            type="button"
-                        >
-                            Submit
-                        </button>
+                            <button
+                                onClick={handleConfirmEmail}
+                                className="mt-4 bg-indigo-800 text-white"
+                                type="button"
+                            >
+                                Submit
+                            </button>
+                        </div>
                     </div>
                 )}
 

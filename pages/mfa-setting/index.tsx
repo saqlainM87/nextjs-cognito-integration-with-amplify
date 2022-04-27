@@ -151,6 +151,7 @@ const MFASetting: NextPage<MFASettingProps> = ({ mfaType, hasIdentities }) => {
                                 onChange={(event) =>
                                     setToken(event.target.value)
                                 }
+                                className="bg-indigo-300"
                             />
                             <button
                                 className="ml-2 text-white bg-indigo-800"

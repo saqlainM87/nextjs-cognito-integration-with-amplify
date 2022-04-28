@@ -53,7 +53,6 @@ const MFASetting: NextPage<MFASettingProps> = ({ mfaType, hasIdentities }) => {
 
             setUser(user);
 
-            // Send confirmation code to user's email
             const code = await Auth.setupTOTP(user);
 
             if (code) {
@@ -68,9 +67,9 @@ const MFASetting: NextPage<MFASettingProps> = ({ mfaType, hasIdentities }) => {
 
     const verifyToken = async () => {
         try {
-            const verifiedUser = await Auth.verifyTotpToken(user, token);
+            const tokenVerified = await Auth.verifyTotpToken(user, token);
 
-            if (verifiedUser) {
+            if (tokenVerified) {
                 const response = await Auth.setPreferredMFA(user, 'TOTP');
 
                 if (response) {
@@ -86,7 +85,9 @@ const MFASetting: NextPage<MFASettingProps> = ({ mfaType, hasIdentities }) => {
 
     const disableMFA = async () => {
         try {
-            const user = await Auth.currentAuthenticatedUser();
+            const user = await Auth.currentAuthenticatedUser({
+                bypassCache: true,
+            });
 
             const response = await Auth.setPreferredMFA(user, 'NOMFA');
 
@@ -151,7 +152,7 @@ const MFASetting: NextPage<MFASettingProps> = ({ mfaType, hasIdentities }) => {
                                 onChange={(event) =>
                                     setToken(event.target.value)
                                 }
-                                className="bg-indigo-300"
+                                className="bg-indigo-100"
                             />
                             <button
                                 className="ml-2 text-white bg-indigo-800"

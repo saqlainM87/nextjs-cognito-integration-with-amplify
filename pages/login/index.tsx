@@ -14,7 +14,9 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     try {
         const { Auth } = withSSRContext(context);
 
-        const userInfo = await Auth.currentAuthenticatedUser();
+        const userInfo = await Auth.currentAuthenticatedUser({
+            bypassCache: true,
+        });
 
         if (userInfo) {
             res.setHeader('location', '/dashboard');

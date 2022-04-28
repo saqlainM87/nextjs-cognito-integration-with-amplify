@@ -10,7 +10,9 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     try {
         const { Auth } = withSSRContext(context);
 
-        const userInfo = await Auth.currentAuthenticatedUser();
+        const userInfo = await Auth.currentAuthenticatedUser({
+            bypassCache: true,
+        });
 
         if (userInfo) {
             res.setHeader('location', '/dashboard');
@@ -73,6 +75,7 @@ const ResendEmail: NextPage = () => {
             <form
                 onSubmit={handleSubmit}
                 className="flex flex-col items-center justify-center w-fit bg-indigo-200 rounded-md p-6"
+                autoComplete="off"
             >
                 <h1 className="text-xl mb-4">Resend Sign Up Email</h1>
 

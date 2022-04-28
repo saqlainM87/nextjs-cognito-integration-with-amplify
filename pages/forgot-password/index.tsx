@@ -1,8 +1,32 @@
-import { NextPage } from 'next';
+import { GetServerSideProps, NextPage } from 'next';
 import { useState } from 'react';
 import { useRouter } from 'next/router';
-import { Auth } from 'aws-amplify';
+import { Auth, withSSRContext } from 'aws-amplify';
 import Link from 'next/link';
+
+export const getServerSideProps: GetServerSideProps = async (context) => {
+    const { res } = context;
+
+    try {
+        const { Auth } = withSSRContext(context);
+
+        const userInfo = await Auth.currentAuthenticatedUser({
+            bypassCache: true,
+        });
+
+        if (userInfo) {
+            res.setHeader('location', '/dashboard');
+            res.statusCode = 302;
+            res.end();
+        }
+    } catch (error) {
+        //
+    }
+
+    return {
+        props: {},
+    };
+};
 
 const ForgotPassword: NextPage = () => {
     const router = useRouter();
@@ -61,6 +85,7 @@ const ForgotPassword: NextPage = () => {
             <form
                 onSubmit={handleSubmit}
                 className="flex flex-col items-center justify-center w-fit bg-indigo-200 rounded-md p-6"
+                autoComplete="off"
             >
                 <h1 className="text-xl mb-4">Forgot Password?</h1>
 

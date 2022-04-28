@@ -8,7 +8,9 @@ import styles from './SignUp.module.css';
 
 export const getServerSideProps: GetServerSideProps = async ({ res }) => {
     try {
-        const userInfo = await Auth.currentAuthenticatedUser();
+        const userInfo = await Auth.currentAuthenticatedUser({
+            bypassCache: true,
+        });
 
         if (userInfo) {
             res.setHeader('location', '/dashboard');
@@ -56,6 +58,7 @@ const Login: NextPage = () => {
     const confirmSignUp = async () => {
         try {
             await Auth.confirmSignUp(email, code);
+
             alert('Code verified successfully');
             router.push('/login');
         } catch (error) {
@@ -66,6 +69,7 @@ const Login: NextPage = () => {
     const resendConfirmationCode = async () => {
         try {
             await Auth.resendSignUp(email);
+
             alert('code resent successfully');
         } catch (error) {
             alert('error resending code: ' + error);
@@ -90,6 +94,7 @@ const Login: NextPage = () => {
             <form
                 onSubmit={handleSubmit}
                 className={`${styles.signUpForm} w-fit bg-indigo-200 rounded-md p-6`}
+                autoComplete="off"
             >
                 <h1 className="text-xl mb-4">Sign Up</h1>
 

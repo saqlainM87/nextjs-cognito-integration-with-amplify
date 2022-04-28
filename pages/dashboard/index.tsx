@@ -18,16 +18,12 @@ interface DashboardProp {
 export const getServerSideProps: GetServerSideProps<DashboardProp> = async (
     context
 ) => {
-    const { res } = context;
-
     try {
         const { Auth } = withSSRContext(context);
 
         const userInfo = await Auth.currentAuthenticatedUser({
             bypassCache: true,
         });
-
-        console.log(userInfo.signInUserSession);
 
         if (userInfo) {
             return {

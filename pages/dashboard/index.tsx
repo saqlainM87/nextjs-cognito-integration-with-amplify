@@ -3,6 +3,7 @@ import { Auth, withSSRContext } from 'aws-amplify';
 import { useRouter } from 'next/router';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
+import { Header } from '../../components/header';
 
 interface DashboardProp {
     userInfo?: {
@@ -110,48 +111,55 @@ const Dashboard: NextPage<DashboardProp> = ({ userInfo }) => {
     };
 
     return (
-        <div className="md:container p-4 mx-auto">
-            <h1 className="text-xl mb-4">Dashboard</h1>
+        <>
+            <Header />
 
-            <div className="float-right">
-                <div className="mb-2 flex justify-end">
-                    <button className="bg-indigo-800 text-white">
-                        <Link href="/mfa-setting">MFA Setting</Link>
-                    </button>
+            <div className="md:container p-4 mx-auto">
+                <h1 className="text-xl mb-4">Dashboard</h1>
+
+                <div className="float-right">
+                    <div className="mb-2 flex justify-end">
+                        <button className="bg-indigo-800 text-white">
+                            <Link href="/mfa-setting">MFA Setting</Link>
+                        </button>
+                    </div>
+
+                    <div className="flex justify-end">
+                        <button
+                            onClick={handleDelete}
+                            className="bg-red-800 text-white"
+                        >
+                            Delete My Account
+                        </button>
+                    </div>
                 </div>
 
-                <div className="flex justify-end">
-                    <button
-                        onClick={handleDelete}
-                        className="bg-red-800 text-white"
-                    >
-                        Delete My Account
-                    </button>
-                </div>
+                <span>
+                    Welcome, <strong>{user?.attributes.name}</strong>
+                </span>
+                <br />
+                <span>
+                    Your Email: <strong>{user?.attributes.email}</strong>
+                </span>
+                <br />
+                <span>
+                    Your Username: <strong>{user?.username}</strong>
+                </span>
+                <br />
+                <span>
+                    Your UID: <strong>{user?.attributes?.sub}</strong>
+                </span>
+                <br />
+                <br />
+
+                <button
+                    className="bg-indigo-800 text-white"
+                    onClick={handleLogout}
+                >
+                    Logout
+                </button>
             </div>
-
-            <span>
-                Welcome, <strong>{user?.attributes.name}</strong>
-            </span>
-            <br />
-            <span>
-                Your Email: <strong>{user?.attributes.email}</strong>
-            </span>
-            <br />
-            <span>
-                Your Username: <strong>{user?.username}</strong>
-            </span>
-            <br />
-            <span>
-                Your UID: <strong>{user?.attributes?.sub}</strong>
-            </span>
-            <br />
-            <br />
-
-            <button className="bg-indigo-800 text-white" onClick={handleLogout}>
-                Logout
-            </button>
-        </div>
+        </>
     );
 };
 

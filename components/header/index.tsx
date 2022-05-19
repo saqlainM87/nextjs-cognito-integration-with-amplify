@@ -57,9 +57,13 @@ export const Header = (): JSX.Element => {
                                     id="user-menu-button"
                                     aria-expanded="false"
                                     aria-haspopup="true"
-                                    // onClick={handleMenuClick}
-                                    onFocus={handleMenuClick}
-                                    onBlur={handleMenuClick}
+                                    onClick={handleMenuClick}
+                                    // onFocus={handleMenuClick}
+                                    onBlur={() => {
+                                        setTimeout(() => {
+                                            setIsMenuOpen(false);
+                                        }, 100);
+                                    }}
                                 >
                                     <span className="sr-only">
                                         Open user menu

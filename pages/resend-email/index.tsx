@@ -42,8 +42,8 @@ const ResendEmail: NextPage = () => {
                 alert('Code sent to your email successfully.');
                 setIsOTPSent(true);
             }
-        } catch (error) {
-            alert(`Error sending email: ${error}`);
+        } catch (error: any) {
+            alert(`Error sending email: ${error?.message}`);
         }
     };
 
@@ -52,8 +52,8 @@ const ResendEmail: NextPage = () => {
             await Auth.confirmSignUp(email, code);
             alert('Code verified successfully');
             router.push('/login');
-        } catch (error) {
-            alert('error confirming sign up' + error);
+        } catch (error: any) {
+            alert(`error confirming sign up: ${error?.message}`);
         }
     };
 

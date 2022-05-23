@@ -62,8 +62,8 @@ const MFASetting: NextPage<MFASettingProps> = ({ mfaType, hasIdentities }) => {
                     `otpauth://totp/AWSCognito:${user?.username}?secret=${code}&issuer=Cognito`
                 );
             }
-        } catch (error) {
-            alert(`Error requesting MFA setup: ${error}`);
+        } catch (error: any) {
+            alert(`Error requesting MFA setup: ${error?.message}`);
         }
     };
 
@@ -80,8 +80,8 @@ const MFASetting: NextPage<MFASettingProps> = ({ mfaType, hasIdentities }) => {
                     router.push('/dashboard');
                 }
             }
-        } catch (error) {
-            alert(`Error requesting reset password: ${error}`);
+        } catch (error: any) {
+            alert(`Error requesting reset password: ${error?.message}`);
         }
     };
 
@@ -97,8 +97,8 @@ const MFASetting: NextPage<MFASettingProps> = ({ mfaType, hasIdentities }) => {
                 alert('MFA disabled successfully.');
                 router.push('/dashboard');
             }
-        } catch (error) {
-            alert(`Error disabling MFA: ${error}`);
+        } catch (error: any) {
+            alert(`Error disabling MFA: ${error?.message}`);
         }
     };
 

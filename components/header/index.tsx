@@ -19,8 +19,8 @@ export const Header = (): JSX.Element => {
             await Auth.signOut();
 
             router.replace('/login');
-        } catch (error) {
-            alert('error signing out: ' + error);
+        } catch (error: any) {
+            alert(`error signing out: ${error?.message}`);
         }
     };
 

@@ -50,8 +50,8 @@ const Login: NextPage = () => {
                 alert('Verification code has been sent to your mail.');
                 setIsOTPSent(true);
             }
-        } catch (error) {
-            alert(`Error signing up: ${error}`);
+        } catch (error: any) {
+            alert(`Error signing up: ${error?.message}`);
         }
     };
 
@@ -61,8 +61,8 @@ const Login: NextPage = () => {
 
             alert('Code verified successfully');
             router.push('/login');
-        } catch (error) {
-            alert('error confirming sign up' + error);
+        } catch (error: any) {
+            alert(`error confirming sign up: ${error?.message}`);
         }
     };
 
@@ -72,7 +72,7 @@ const Login: NextPage = () => {
 
             alert('code resent successfully');
         } catch (error) {
-            alert('error resending code: ' + error);
+            alert(`error resending code: ${error?.message}`);
         }
     };
 

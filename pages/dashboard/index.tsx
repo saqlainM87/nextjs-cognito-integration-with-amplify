@@ -79,8 +79,8 @@ const Dashboard: NextPage<DashboardProp> = ({ userInfo }) => {
             await Auth.signOut();
 
             router.replace('/login');
-        } catch (error) {
-            alert('error signing out: ' + error);
+        } catch (error: any) {
+            alert(`error signing out: ${error?.message}`);
         }
     };
 
@@ -96,8 +96,8 @@ const Dashboard: NextPage<DashboardProp> = ({ userInfo }) => {
 
                     router.replace('/login');
                 }
-            } catch (error) {
-                alert('Error deleting user ' + error);
+            } catch (error: any) {
+                alert(`Error deleting user: ${error?.message}`);
             }
         }
     };

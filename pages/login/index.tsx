@@ -52,8 +52,8 @@ const Login: NextPage = () => {
             if (user) {
                 router.push('/dashboard');
             }
-        } catch (error) {
-            alert(`Error signing in: ${error}`);
+        } catch (error: any) {
+            alert(`Error signing in: ${error?.message}`);
         }
     };
 
@@ -68,8 +68,8 @@ const Login: NextPage = () => {
             if (loggedUser) {
                 router.replace('/dashboard');
             }
-        } catch (error) {
-            alert(`Error signing in: ${error}`);
+        } catch (error: any) {
+            alert(`Error signing in: ${error?.message}`);
         }
     };
 

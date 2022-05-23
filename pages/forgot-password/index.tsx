@@ -44,8 +44,8 @@ const ForgotPassword: NextPage = () => {
                 alert('Code sent to email successfully for password reset.');
                 setIsOTPSent(true);
             }
-        } catch (error) {
-            alert(`Error requesting reset password: ${error}`);
+        } catch (error: any) {
+            alert(`Error requesting reset password: ${error?.message}`);
         }
     };
 
@@ -62,8 +62,8 @@ const ForgotPassword: NextPage = () => {
                 alert('Password reset successful');
                 router.push('/login');
             }
-        } catch (error) {
-            alert(`Error resetting password: ${error}`);
+        } catch (error: any) {
+            alert(`Error resetting password: ${error?.message}`);
         }
     };
 
